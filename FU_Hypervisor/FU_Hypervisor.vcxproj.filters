@@ -48,6 +48,12 @@
     <ClCompile Include="..\HyperPlatform\HyperPlatform\vmm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FU_Hypervisor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fake_page.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\HyperPlatform\HyperPlatform\asm.h">
@@ -87,6 +93,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\HyperPlatform\HyperPlatform\vmm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FU_Hypervisor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fake_page.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

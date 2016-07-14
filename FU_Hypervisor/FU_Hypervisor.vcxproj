@@ -70,15 +70,19 @@
   <PropertyGroup />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
+    <IncludePath>$(VC_IncludePath);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
+    <IncludePath>$(VC_IncludePath);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
+    <IncludePath>$(VC_IncludePath);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
+    <IncludePath>$(VC_IncludePath);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemGroup>
     <Inf Include="FU_Hypervisor.inf" />
@@ -95,6 +99,8 @@
     <ClCompile Include="..\HyperPlatform\HyperPlatform\util.cpp" />
     <ClCompile Include="..\HyperPlatform\HyperPlatform\vm.cpp" />
     <ClCompile Include="..\HyperPlatform\HyperPlatform\vmm.cpp" />
+    <ClCompile Include="fake_page.cpp" />
+    <ClCompile Include="FU_Hypervisor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\HyperPlatform\HyperPlatform\asm.h" />
@@ -110,6 +116,8 @@
     <ClInclude Include="..\HyperPlatform\HyperPlatform\util_page_constants.h" />
     <ClInclude Include="..\HyperPlatform\HyperPlatform\vm.h" />
     <ClInclude Include="..\HyperPlatform\HyperPlatform\vmm.h" />
+    <ClInclude Include="fake_page.h" />
+    <ClInclude Include="FU_Hypervisor.h" />
   </ItemGroup>
   <ItemGroup>
     <MASM Include="..\HyperPlatform\HyperPlatform\Arch\x64\x64.asm">
