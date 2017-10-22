@@ -1,0 +1,10 @@
+
+TODO:
+- wanna map patch_address to the kernel space using MmProbeAndLockPages
+- multi-page handling
+- create sample hook projects: local hook with minihook (C), and remote hook 
+    with EasyHook (C++)
+
+BUG:
+- Full dmp aquision never ends
+

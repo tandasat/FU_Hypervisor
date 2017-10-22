@@ -1,3 +1,9 @@
 [submodule "HyperPlatform"]
 	path = HyperPlatform
 	url = https://github.com/tandasat/HyperPlatform.git
+[submodule "TestPrograms/capstone"]
+	path = TestPrograms/capstone
+	url = https://github.com/tandasat/capstone.git
+[submodule "TestPrograms/minhook"]
+	path = TestPrograms/minhook
+	url = https://github.com/tandasat/minhook.git

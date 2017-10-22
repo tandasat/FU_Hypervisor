@@ -19,11 +19,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Inf Include="FU_Hypervisor.inf">
-      <Filter>Driver Files</Filter>
-    </Inf>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="..\HyperPlatform\HyperPlatform\driver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

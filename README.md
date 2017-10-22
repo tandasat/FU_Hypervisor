@@ -1,16 +1,5 @@
 # FU_Hypervisor
-A hypervisor hiding user-mode memory using EPT
 
-
-
-/*
-TODO:
-- wanna map patch_address to the kernel space using MmProbeAndLockPages
-- multi-page handling
-- create sample hook projects: local hook with minihook (C), and remote hook 
-    with EasyHook (C++)
-
-BUG:
-- Full dmp aquision never ends
-*/
-
+A discontinued hypervisor project to hide user-mode memory using EPT. No support.
+Uploading code as-is as requested. The FU_Hypervisor.sln compiles on VS2017,
+while test programs compile on VS2015.
