@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2016, tandasat. All rights reserved.
+// Copyright (c) 2015-2018, Satoshi Tanda. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
@@ -10,7 +10,6 @@
 #include "../HyperPlatform/HyperPlatform/log.h"
 #include "../HyperPlatform/HyperPlatform/util.h"
 #include "../HyperPlatform/HyperPlatform/ept.h"
-#include "../HyperPlatform/HyperPlatform/kernel_stl.h"
 #include <vector>
 #include <memory>
 #include <algorithm>
@@ -39,7 +38,7 @@ struct Page {
   ~Page();
 };
 
-// Allocates a non-paged, page-alined page. Issues bug check on failure
+// Allocates a non-paged, page-aligned page. Issues bug check on failure
 Page::Page()
     : address(reinterpret_cast<UCHAR*>(ExAllocatePoolWithTag(
           NonPagedPool, PAGE_SIZE, kHyperPlatformCommonPoolTag))) {
@@ -62,7 +61,7 @@ struct FakePageData {
   // patch_address, and shadow_page_base_for_exec is exposed for execution.
   std::shared_ptr<Page> shadow_page_base_for_exec;
 
-  // Phyisical address of the above two copied pages
+  // Physical address of the above two copied pages
   ULONG64 pa_base_for_rw;
   ULONG64 pa_base_for_exec;
 
@@ -214,7 +213,7 @@ _Use_decl_annotations_ bool FpVmCallCreateFakePage(
     return false;
   }
 
-  HYPERPLATFORM_LOG_DEBUG("CR3 = %p, Patch = %p (%p), Exec = %p (%p)",
+  HYPERPLATFORM_LOG_DEBUG("CR3 = %016Ix, Patch = %p (%016llx), Exec = %p (%016llx)",
                           fp_data->target_cr3, fp_data->patch_address,
                           fp_data->pa_base_for_rw,
                           fp_data->shadow_page_base_for_exec->address +
@@ -248,8 +247,8 @@ FppCreateFakePageData(SharedFakePageData* shared_fp_data, void* context) {
   // start_address points to the kernel address space? This code does not give
   // good answers to those situations. A right thing to do is reading the
   // parameter from kernel context where MmProbeAndLockPages() and
-  // MmGetSystemAddressForMdlSafe() are avaialable or using Buffered I/O via
-  // IOCTL, and then vefity that start_address points to a valid location. See
+  // MmGetSystemAddressForMdlSafe() are available or using Buffered I/O via
+  // IOCTL, and then verify that start_address points to a valid location. See
   // "User-Mode Interactions: Guidelines for Kernel-Mode Drivers" from
   // Microsoft.
   __writecr3(guest_cr3);
@@ -267,7 +266,7 @@ FppCreateFakePageData(SharedFakePageData* shared_fp_data, void* context) {
   auto reusable_fp_data = FppFindFakePageDataByPage(
       shared_fp_data, reinterpret_cast<void*>(params.start_address));
   if (reusable_fp_data) {
-    // Found an existing FakePageData object targetting the same page as this
+    // Found an existing FakePageData object targeting the same page as this
     // one. re-use shadow pages.
     fp_data->shadow_page_base_for_exec =
         reusable_fp_data->shadow_page_base_for_exec;
@@ -324,7 +323,7 @@ _Use_decl_annotations_ NTSTATUS FpVmCallEnableFakePages(
                   fp_data->original_bytes.size());
     __writecr3(vmm_cr3);
 
-    HYPERPLATFORM_LOG_DEBUG_SAFE("Shadowing %p", fp_data->target_cr3,
+    HYPERPLATFORM_LOG_DEBUG_SAFE("Shadowing %016Ix:%p", fp_data->target_cr3,
                                  fp_data->patch_address);
     FppEnableFakePageForExec(*fp_data, ept_data);
   }
@@ -341,18 +340,18 @@ _Use_decl_annotations_ static void FppEnableFakePageForExec(
   const auto ept_pt_entry =
       EptGetEptPtEntry(ept_data, UtilPaFromVa(fp_data.patch_address));
 
-  // Allow the VMM to redirect read and write access to the address by dening
+  // Allow the VMM to redirect read and write access to the address by denying
   // those accesses and handling them on EPT violation
   ept_pt_entry->fields.write_access = false;
   ept_pt_entry->fields.read_access = false;
 
-  // Only execution is allowed on the adresss. Show the copied page for exec
+  // Only execution is allowed on the address. Show the copied page for exec
   // that has an actual breakpoint to the guest.
   ept_pt_entry->fields.physial_address =
       UtilPfnFromPa(fp_data.pa_base_for_exec);
 
   __writecr3(old_cr3);
-  UtilInveptAll();
+  UtilInveptGlobal();
 }
 
 // Show a shadowed page for read and write
@@ -371,7 +370,7 @@ _Use_decl_annotations_ static void FppEnableFakePageForRw(
   ept_pt_entry->fields.physial_address = UtilPfnFromPa(fp_data.pa_base_for_rw);
 
   __writecr3(old_cr3);
-  UtilInveptAll();
+  UtilInveptGlobal();
 }
 
 // Disables all fake pages for the current process
@@ -390,7 +389,7 @@ _Use_decl_annotations_ void FpVmCallDisableFakePages(
       continue;
     }
 
-    HYPERPLATFORM_LOG_DEBUG_SAFE("Unshadowing %p", fp_data->target_cr3,
+    HYPERPLATFORM_LOG_DEBUG_SAFE("Unshadowing %016Ix:%p", fp_data->target_cr3,
                                  fp_data->patch_address);
     FppDisableFakePage(*fp_data, ept_data);
 
@@ -419,7 +418,7 @@ _Use_decl_annotations_ static void FppDisableFakePage(
   ept_pt_entry->fields.physial_address = UtilPfnFromPa(pa_base);
 
   __writecr3(old_cr3);
-  UtilInveptAll();
+  UtilInveptGlobal();
 }
 
 _Use_decl_annotations_ void FpVmCallDeleteFakePages(
